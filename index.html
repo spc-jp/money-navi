@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0B1D44">
-  <meta name="description" content="税金・年金・会計の悩みをひとりで抱えず、整理して必要な専門家につなぐ相談ナビの試作版。">
-  <title>くらしのお金相談ナビ | SPC デモ</title>
+  <meta name="description" content="税金・年金・会計の悩みをひとりで抱えず、確認ポイントと相談先を整理できる、くらしのお金相談ナビ。">
+  <title>くらしのお金相談ナビ | SPC</title>
   <style>
     :root { --navy:#0B1D44; --blue:#1746A2; --light:#EFF5FC; --ink:#14243E; --muted:#627087; --line:#DEE7F1; --white:#fff; --bg:#F8FAFD; --radius:18px; }
     * { box-sizing: border-box; }
@@ -14,8 +14,8 @@
     button:focus-visible { outline:3px solid #E7A443; outline-offset:3px; }
     .mast { background:var(--navy); color:white; padding:13px 18px; }
     .mast-inner { max-width:920px; margin:auto; display:flex; align-items:center; justify-content:space-between; gap:12px; }
-    .brand {font-weight:800; letter-spacing:.045em; font-size:16px;}
-    .demo {font-size:12px; border:1px solid #7F96C0; border-radius:50px; padding:2px 11px; color:#DBE8FC;}
+    .brand {font-weight:800; letter-spacing:.045em; font-size:16px; color:inherit; text-decoration:none;}
+    .brand:focus-visible {outline:3px solid #E7A443; outline-offset:4px; border-radius:4px;}
     main {max-width:920px;margin:auto;padding:25px 16px 45px;}
     .hero { padding:25px 22px; border-radius:22px; background:linear-gradient(125deg,#F0F5FF,#FFF); border:1px solid var(--line); }
     .eyebrow { font-size:12px; letter-spacing:.14em; color:var(--blue); font-weight:800; }
@@ -37,7 +37,8 @@
     .panel {background:white;border:1px solid var(--line);border-radius:var(--radius);padding:21px;margin-top:17px;}
     .panel[hidden], .hidden {display:none!important;}
     .breadcrumb {font-size:13px;color:#526580;margin-bottom:10px;}
-    .back {background:transparent;color:var(--blue);border:0;font-weight:700;padding:7px 0;}
+    .back {display:inline-flex;align-items:center;justify-content:center;min-height:44px;background:#EAF2FF;color:var(--blue);border:1.5px solid var(--blue);border-radius:12px;font-weight:800;padding:9px 16px;margin-bottom:8px;box-shadow:0 2px 7px rgba(11,29,68,.08);}
+    .back:hover {background:#D9E9FF;}
     .topic-grid {display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:17px;}
     .choice {background:#F8FBFF;border:1px solid #CEDCED;border-radius:12px;padding:16px 13px;text-align:left;min-height:65px;font-weight:700;color:var(--ink);}
     .choice:hover,.choice[aria-pressed="true"] {background:#EAF2FF;border-color:var(--blue);}
@@ -62,8 +63,8 @@
     @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
   </style>
 </head>
-<body>
-<header class="mast"><div class="mast-inner"><div class="brand">くらしのお金相談ナビ <span style="font-weight:400;font-size:11px">by SPC</span></div><span class="demo">試作版</span></div></header>
+<body id="top">
+<header class="mast"><div class="mast-inner"><a class="brand" id="homeLink" href="#top" aria-label="くらしのお金相談ナビのトップに戻る">くらしのお金相談ナビ <span style="font-weight:400;font-size:11px">by SPC</span></a></div></header>
 <main>
   <section class="hero">
     <div class="eyebrow">ひとりで考えない、お金のこと。</div>
@@ -80,14 +81,14 @@
     </div>
   </section>
   <section id="flow" class="panel" hidden aria-live="polite">
-    <button class="back" id="backBtn" type="button">← 戻る</button>
+    <button class="back" id="backBtn" type="button">← ひとつ前に戻る</button>
     <div class="breadcrumb" id="crumb"></div>
     <h2 id="flowTitle"></h2>
     <p class="question-help" id="flowHelp"></p>
     <div class="topic-grid" id="options"></div>
     <div id="result" hidden></div>
   </section>
-  <div class="notice"><strong>このアプリについて</strong><br>一般的な制度を調べるための試作版です。相談内容はこの画面内で整理され、サーバーには送信されません。税額・受給額の確定、個別の税務判断、法律判断などは行いません。制度や金額は変わるため、最新の公的情報や専門家にご確認ください。専門家への実際の紹介・予約機能はまだ搭載していません。</div>
+  <div class="notice"><strong>このアプリについて</strong><br>一般的な制度や確認ポイントを整理するためのアプリです。相談内容はこの画面内で整理され、サーバーには送信されません。税額・受給額の確定、個別の税務判断、法律判断などは行いません。制度や金額は変わるため、最新の公的情報や専門家にご確認ください。専門家への実際の紹介・予約機能はまだ搭載していません。</div>
 </main>
 <footer><strong>Planning &amp; Production by SPC</strong><br>ひとりで考えない。必要なときは専門家へ。</footer>
 <script>
@@ -130,7 +131,8 @@
     const pre=el('div',memo,'memo');pre.setAttribute('role','region');pre.setAttribute('aria-label','相談メモ本文');result.append(pre);
     const wrap=el('div',undefined,'actions'),copy=el('button','メモをコピーする','primary'),retry=el('button','戻る','secondary');copy.type=retry.type='button';const status=el('p','','status');status.setAttribute('aria-live','polite');copy.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(memo);status.textContent='コピーしました。';}catch(e){status.textContent='コピーできない場合は、メモの文字を選択してコピーしてください。';}});retry.addEventListener('click',()=>renderResult(situation));wrap.append(copy,retry);result.append(wrap,status);
   }
-  function showHome(){stage='home';category=null;topic=null;situation=null;home.hidden=false;flow.hidden=true;home.scrollIntoView({behavior:'smooth',block:'start'});}
+  function showHome(){stage='home';category=null;topic=null;situation=null;home.hidden=false;flow.hidden=true;window.scrollTo({top:0,behavior:'smooth'});}
+  document.querySelector('#homeLink').addEventListener('click',event=>{event.preventDefault();showHome();});
   backBtn.addEventListener('click',()=>{if(stage==='memo')renderResult(situation);else if(stage==='result')renderSituation(topic);else if(stage==='situation')renderTopics(category);else showHome();});
   document.querySelectorAll('[data-category]').forEach(b=>b.addEventListener('click',()=>renderTopics(b.dataset.category)));
 </script>
