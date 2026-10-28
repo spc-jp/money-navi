@@ -57,6 +57,11 @@
     .notice strong {font-size:13px;color:var(--ink);}
     .memo {white-space:pre-wrap;word-break:break-word;background:#F5F8FC;border:1px solid #DAE3EE;border-radius:13px;padding:14px;font-size:14px;}
     .status {font-size:12px;color:#2D6F44;min-height:18px;}
+    .consult-links {display:grid;gap:9px;margin:11px 0 6px;}
+    .consult-link {display:block;background:#F5F9FF;color:var(--blue);border:1px solid #BDD0EA;border-radius:12px;padding:12px 15px;font-size:14px;font-weight:800;text-decoration:none;}
+    .consult-link:hover {background:#EAF2FF;border-color:var(--blue);text-decoration:underline;}
+    .consult-link:focus-visible {outline:3px solid #E7A443;outline-offset:2px;}
+    .consult-hint {font-size:12px;color:var(--muted);margin:8px 0 4px;}
     footer {background:var(--navy);color:#D7E3F7;text-align:center;padding:19px 15px;font-size:12px;letter-spacing:.035em;}
     footer strong {color:white;}
     @media(max-width:650px){ main{padding:16px 12px 28px;} .hero{padding:21px 18px;} .cards{grid-template-columns:1fr;gap:10px;} .card{min-height:unset;display:grid;grid-template-columns:51px 1fr;column-gap:12px;row-gap:2px;padding:15px;} .card .icon{grid-row:1/4;} .card strong{font-size:19px;} .card-desc{font-size:13px;} .card-cta{margin-top:5px;} .topic-grid{grid-template-columns:1fr;} .panel{padding:17px;} }
@@ -113,6 +118,21 @@
       {key:'invoice',title:'請求書・入金管理を整理したい',note:'請求の流れと入金確認を見える化します。',checks:['請求書の発行方法とタイミング','入金予定日と未入金の把握方法','帳簿との照合手順'],specialist:'税理士または会計事務所'}
     ]}
   };
+  // 相談先は各運営機関の公式ページを案内します。特定事務所への紹介や予約は行いません。
+  const consultationLinks = {
+    tax: [
+      {label:'国税庁｜税の相談窓口を確認する ↗',url:'https://www.nta.go.jp/taxes/shiraberu/sodan/index.htm'},
+      {label:'日本税理士会連合会｜税理士を探す ↗',url:'https://www.zeirishikensaku.jp/'}
+    ],
+    pension: [
+      {label:'日本年金機構｜相談・予約の案内を見る ↗',url:'https://www.nenkin.go.jp/section/guidance/yoyaku.html'},
+      {label:'日本年金機構｜電話で相談する ↗',url:'https://www.nenkin.go.jp/section/tel/index.html'}
+    ],
+    accounting: [
+      {label:'日本税理士会連合会｜税理士を探す ↗',url:'https://www.zeirishikensaku.jp/'},
+      {label:'中小企業庁｜経営・資金繰りの相談先を見る ↗',url:'https://www.chusho.meti.go.jp/soudan/soudan_02.html'}
+    ]
+  };
   const home=document.querySelector('#home'),flow=document.querySelector('#flow'),backBtn=document.querySelector('#backBtn'),crumb=document.querySelector('#crumb'),flowTitle=document.querySelector('#flowTitle'),flowHelp=document.querySelector('#flowHelp'),options=document.querySelector('#options'),result=document.querySelector('#result');
   let category=null, topic=null, situation=null, stage='home';
   function el(tag,text,cls){const x=document.createElement(tag);if(cls)x.className=cls;if(text!==undefined)x.textContent=text;return x;}
@@ -124,6 +144,15 @@
     const rc=el('div',undefined,'result-card');rc.append(el('strong',topic.title),el('p',topic.note));result.append(rc);
     let head=value==='prepare'?'準備しておきたいこと':value==='consult'?'専門家に伝えると役立つこと':'まず確認したいこと';result.append(el('h3',head));const ul=el('ul',undefined,'checklist');topic.checks.forEach(x=>ul.append(el('li',x)));result.append(ul);
     result.append(el('h3','次の相談先'));result.append(el('p',topic.specialist+'が相談先の候補です。相談するかどうかは、ご自身で選べます。'));
+    result.append(el('h3','公式の相談窓口を確認する'));
+    const linkGroup=el('div',undefined,'consult-links');
+    consultationLinks[category].forEach(item=>{
+      const a=el('a',item.label,'consult-link');
+      a.href=item.url;a.target='_blank';a.rel='noopener noreferrer';
+      linkGroup.append(a);
+    });
+    result.append(linkGroup,el('p','公式サイトが別画面で開きます。このアプリでは専門家の紹介・予約を行っていません。','consult-hint'));
+    if(category==='tax' && topic.key==='housing') result.append(el('p','固定資産税・不動産取得税などの地方税は、物件所在地の自治体や都道府県の担当窓口にもご確認ください。','consult-hint'));
     const actions=el('div',undefined,'actions'),more=el('button','ほかの悩みも見る','secondary'),memo=el('button','相談メモを作る','primary');more.type=memo.type='button';more.addEventListener('click',()=>renderTopics(category));memo.addEventListener('click',renderMemo);actions.append(memo,more);result.append(actions);
   }
   function renderMemo(){stage='memo';resetFrame();crumb.textContent=catalog[category].name+' ＞ '+topic.title;flowTitle.textContent='相談メモ';flowHelp.textContent='このメモをコピーして、必要なときに専門家へ相談できます。';options.hidden=true;result.hidden=false;
