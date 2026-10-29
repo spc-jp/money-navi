@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 100 100" role="img" aria-labelledby="title desc">
+<title id="title">くらしのお金相談ナビ ファビコン</title>
+<desc id="desc">紺色の角丸四角の中に、お金を表す円記号入りの白い吹き出し</desc>
+<rect width="100" height="100" rx="21" fill="#000066"/>
+<path d="M22 23 H78 C84 23 88 27 88 33 V65 C88 72 83 77 76 77 H46 L30 87 V77 H22 C15 77 12 72 12 65 V35 C12 27 16 23 22 23 Z" fill="#FFFFFF"/>
+<path d="M37 37 L50 50 L63 37 M50 50 V67 M37 54 H63 M37 61 H63" fill="none" stroke="#000066" stroke-width="5.4" stroke-linejoin="round" stroke-linecap="round"/>
+</svg>
